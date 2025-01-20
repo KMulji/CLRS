@@ -2,7 +2,8 @@
 #include <vector>
 
 using std::vector;
-
+void InsertionSortBack(vector<int> &nums);
+vector<int> BinaryAdd(vector<int> &nums1,vector<int> &nums2);
 
 /****************************************************************************
     Input: A sequence of n numbers [a1,a2,...,an].
@@ -41,9 +42,12 @@ void DisplayVector(vector<int> &nums)
 
 int main()
 {
-    vector<int> nums = {5,2,4,6,1,3};
-    InsertionSort(nums);
-    DisplayVector(nums);
+    vector<int> nums1 = {1,1,1,1};//15
+    vector<int> nums2 = {1,1,1,1};//15
+    vector<int> c = BinaryAdd(nums1,nums2);
+
+    DisplayVector(c);
+
     return 0;
 }
 /********************************************************************************************
@@ -81,7 +85,129 @@ int main()
  *                                      Exercise 2.1-1                                                  *
  Using Insertion sort algorithm, illustrate the operation of sorting an
  array initially containing the sequence [31,41,59,26,41,58].
+    31, 41, 59, 26, 41 ,58.
 
- 
- 
+    i=1,j=0;
+    since its in order we move i forward.
+
+    31, 41, 59, 26, 41 ,58.
+    i=2,j=1,key=null
+    since its in order we move i forward.
+
+    31, 41, 59, 26, 41 ,58.
+    i=3,j=2,key=null
+    since j>=0 and 59>26 we set nums[j+1]=j and do j--.
+
+     31, 41, 59, 59, 41 ,58.
+     i=3,j=1 key=26;
+     since 41>26 we set nums[j+1]=j and do j--;
+
+     31,41,41,59,41,58
+     i=3,j=0,key=26
+     since 31>26 we set nums[j+1]=j and do j--;
+
+     31,31,41,59,41,58
+     i=3,j=-1,key=26.
+
+     since j<0 we set nums[j+1]=key and increase i by 1
+
+     26,31,41,59,41,58
+
+     i=4,j=3,key=41,
+     since 59>41 we set nums[j+1]=j and do j--
+
+     26,31,41,59,59,58 
+
+     i=4,j=2,key=41
+     since the rest is not greate than key we set nums[j+1]=key and increase i by 1.
+
+     26,31,41,41,59,58
+     i=5,j=4,key=58
+
+     since 59>58 we set nums[j+1]=j and do j--;
+     26,31,41,41,59,59
+     since the rest of the array is sorted we set nums[j+1]=key and terminate. returning sorted array.
+
+     26,31,41,41,58,59
 */
+
+/******************************************************************************************************** *
+ *    Exercise 2.1-2                                                                                      *
+ *     1. State loop invariant -> At each iteration of the for loop the sum = A[0],A[1],...,A[i] holds.
+ *     2. Initialization proof -> At initialization the sum =0.
+ *     3. Maintenance proof -> At each iteration of the loop we add A[i] to sum. Therefore at the start
+ *         of each iteration the sum is always true.
+ *     4. Termination -> The algorithm terminates at once all elements in the array have been summed.
+ * 
+*/
+
+/************************************************************************************************************
+ *            Exercise 2.1-3                                                                                *
+ * 
+          5,2,4,6,1,3
+          key=2, i=1,j=0
+
+          5,2,2,6,1,3
+          5,4,2,6,1,3
+ 
+ */
+
+void InsertionSortBack(vector<int> &nums)
+{
+      for(int i=1;i<nums.size();i++)
+    {
+        int key = nums[i];
+        int j=i-1;
+
+        while(j>=0 && nums[j]<key)
+        {
+            nums[j+1]=nums[j];
+            j--;
+        }
+        nums[j+1] =key;
+    }
+}
+
+/************************************************************************************************************* *
+ * Exercise 2.1-4                                                                                            *
+  
+1. Loop Invariant -> At each iteration of the loop the value at nums[i] may be equal to key or not equal to key.
+2. Initialization -> before we start we have not found any key.
+3. Maintenance -> Before each iteration 
+*/
+int LinearSearch(vector<int> &nums,int key)
+{
+    for(int i=0;i<nums.size();i++)
+    {
+        if(nums[i]==key)
+        {
+            return i;
+        }
+        
+    }
+    return -1;
+}
+
+/******************************************************************************************************************** *
+ * Exercise 2.1-5
+**********************************************************************************************************************/
+vector<int> BinaryAdd(vector<int> &nums1,vector<int> &nums2)
+{
+    vector<int> ans;
+    int carry=0;
+    for(int i=nums1.size()-1;i>=0;i--)
+    {
+        int c = (nums1[i]+nums2[i]+carry)%2;
+        ans.push_back(c);
+
+        if(nums1[i]+nums2[i]+carry>=2)
+        {
+            carry=1;
+        }else
+        {
+            carry=0;
+        }
+    }
+    ans.push_back(carry);
+    return ans;
+}
