@@ -4,6 +4,21 @@
 using std::vector;
 void InsertionSortBack(vector<int> &nums);
 vector<int> BinaryAdd(vector<int> &nums1,vector<int> &nums2);
+void SelectionSort(vector<int> &nums);
+int BinarySearch(vector<int> &nums,int key);
+
+void MergeSort(int *A,int n);
+void MergeSortPrivate(int A[],int lo,int hi);
+void Merge(int A[],int lo,int mid,int hi);
+
+void QuickSort(vector<int> &nums);
+void QuickSortHelp(vector<int> &nums,int lo,int hi);
+int Partition(vector<int> &nums,int lo,int hi);
+
+bool TwoSum(vector<int> &nums,int goal);
+
+
+
 
 /****************************************************************************
     Input: A sequence of n numbers [a1,a2,...,an].
@@ -42,12 +57,14 @@ void DisplayVector(vector<int> &nums)
 
 int main()
 {
-    vector<int> nums1 = {1,1,1,1};//15
-    vector<int> nums2 = {1,1,1,1};//15
-    vector<int> c = BinaryAdd(nums1,nums2);
+    // vector<int> nums1 = {1,1,1,1};//15
+    // vector<int> nums2 = {1,1,1,1};//15
+    // vector<int> c = BinaryAdd(nums1,nums2);
 
-    DisplayVector(c);
-
+    vector<int> a = {9,4,2,6,7,3,1};
+    std::cout<<TwoSum(a,11)<<std::endl;
+    DisplayVector(a);
+    
     return 0;
 }
 /********************************************************************************************
@@ -210,4 +227,165 @@ vector<int> BinaryAdd(vector<int> &nums1,vector<int> &nums2)
     }
     ans.push_back(carry);
     return ans;
+}
+
+void SelectionSort(vector<int> &nums)
+{
+    for(int i=1;i<nums.size();i++)
+    {
+        for(int j=i+1;j<nums.size();j++)
+        {
+            if(nums[j]<nums[i])
+            {
+                int temp = nums[i];
+                nums[i]=nums[j];
+                nums[j]=temp;
+            }
+        }
+    }
+}
+
+void MergeSort(int *A,int n)
+{
+    MergeSortPrivate(A,0,n-1);
+}
+
+void MergeSortPrivate(int A[],int lo,int hi)
+{
+    int mid;
+    if(lo<hi)
+    {
+        mid = lo +(hi-lo)/2;
+        MergeSortPrivate(A,lo,mid);
+        MergeSortPrivate(A,mid+1,hi);
+        Merge(A,lo,mid,hi);
+        
+    }
+
+}
+void Merge(int A[],int lo,int mid,int hi)
+{
+    int i=lo;
+    int j=mid+1;
+    int k=0;
+
+    int B[hi-lo+1];
+
+    while(i<=mid && j<=hi)
+    {
+        if(A[i]<=A[j])
+        {
+            B[k++]=A[i++];
+        }else
+        {
+            B[k++]=A[j++];
+        }
+    }
+    for(;i<=mid;i++)
+    {
+        B[k++] = A[i];
+    }
+    for(;j<=hi;j++)
+    {
+        B[k++]=A[j];
+    }
+
+    for(int k=0;k<hi-lo+1;k++)
+    {
+        A[lo+k]=B[k];
+    }
+}
+
+int BinarySearch(vector<int> &nums,int key)
+{
+    int lo=0;
+    int hi=nums.size()-1;
+
+    while(lo<=hi)
+    {
+        int mid = lo +(hi-lo)/2;
+
+        if(nums[mid]==key)
+        {
+            return mid;
+        }else if(key>nums[mid])
+        {
+            lo=mid+1;
+        }else if(key<nums[mid])
+        {
+            hi=mid-1;
+        }
+    }
+    return -1;
+}
+
+void QuickSort(vector<int> &nums)
+{
+    QuickSortHelp(nums,0,nums.size()-1);
+}
+void QuickSortHelp(vector<int> &nums,int lo,int hi)
+{
+    if(lo<hi)
+    {
+        int pivot = Partition(nums,lo,hi);
+        QuickSortHelp(nums,lo,pivot-1);
+        QuickSortHelp(nums,pivot+1,hi);
+    }
+}
+int Partition(vector<int> &nums,int lo,int hi)
+{
+    int pivot = hi;
+
+    int i=lo;
+    int j=pivot-1;
+
+    while(i<=j)
+    {
+        while(i<=j && nums[i]<nums[pivot])
+        {   
+            i++;
+        }
+        while(i<=j && nums[j]>nums[pivot])
+        {
+            j--;
+        }
+        if(i<=j)
+        {
+            int temp=nums[i];
+            nums[i]=nums[j];
+            nums[j]=temp;
+        }
+    }
+
+    int temp = nums[i];
+    nums[i]=nums[pivot];
+    nums[pivot]=temp;
+
+
+    return i;
+}
+
+bool TwoSum(vector<int> &nums,int goal)
+{
+    QuickSort(nums);
+
+    int i=0;
+    int j=nums.size()-1;
+
+    while(i<j)
+    {
+        int sum = nums[i]+nums[j];
+
+        if(sum==goal)
+        {
+            return true;
+        }else if(sum<goal)
+        {
+            i++;
+        }else if(sum>goal)
+        {
+            j--;
+        }
+    }
+    return false;
 }
